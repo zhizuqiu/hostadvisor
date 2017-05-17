@@ -3,32 +3,17 @@ package com.unicom.chanyi.startAdvisor;
 import com.unicom.chanyi.advisor.Args;
 import com.unicom.chanyi.advisor.CollectThread;
 import com.unicom.chanyi.advisor.Listener;
+import com.unicom.chanyi.commonTools.commonTools;
 import com.unicom.chanyi.influxdb.InfluxdbTools;
 import com.unicom.chanyi.snmp.SnmpTools;
 import org.apache.log4j.Logger;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 
-
-@SpringBootApplication
-@RestController
 public class AdvisorController {
 
     private static Logger logger = Logger.getLogger(AdvisorController.class);
 
 
-    @RequestMapping("/health")
-    @ResponseBody
-    String home() {
-        return "health";
-    }
-
-
     public static void main(String[] arg) throws Exception {
-        SpringApplication.run(AdvisorController.class, arg);
 
         String type = "pro";
         String snmpIp = "10.161.24.226";
@@ -48,7 +33,8 @@ public class AdvisorController {
         logger.info(type);
 
         if (type.equals("pro")) {
-            snmpIp = System.getenv("snmpIp");
+            //snmpIp = System.getenv("snmpIp");
+            snmpIp = commonTools.getHostIp(commonTools.getInetAddress());
             snmpPort = System.getenv("snmpPort");
             influxdb_url = System.getenv("influxdb_url");
             influxdb_username = System.getenv("influxdb_username");
