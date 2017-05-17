@@ -52,6 +52,7 @@
                             <mainClass>com.unicom.chanyi.startAdvisor.AdvisorController</mainClass>
                         </manifest>
                     </archive>
+                    <encoding>UTF-8</encoding>
                 </configuration>
                 <executions>
                     <execution>
