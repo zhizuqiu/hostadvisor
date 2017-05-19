@@ -15,7 +15,7 @@ public class AdvisorController {
 
     public static void main(String[] arg) throws Exception {
 
-        String type = "pro";
+        String type = "test";
         String snmpIp = "10.161.24.226";
         String snmpPort = "161";
         String influxdb_url = "http://10.161.24.226:8086";
