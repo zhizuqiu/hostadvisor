@@ -1,6 +1,6 @@
-package com.unicom.chanyi.advisor;
+package com.unicom.chanyi.hostadvisor;
 
-public class Args {
+public class HostArgs {
     private String ip;
     private String snmpPort;
     private int influxdbInterval;
@@ -15,7 +15,7 @@ public class Args {
 
     @Override
     public String toString() {
-        return "Args{" +
+        return "ConArgs{" +
                 "ip='" + ip + '\'' +
                 ", snmpPort='" + snmpPort + '\'' +
                 ", influxdbInterval=" + influxdbInterval +
@@ -118,7 +118,7 @@ public class Args {
         this.clear = clear;
     }
 
-    public Args(String ip, String snmpPort, int influxdbInterval, String influxdbUrl, String infludbUser, String influxdbpass, String influxdbDbname, String policy, String duration, String replication, String clear) {
+    public HostArgs(String ip, String snmpPort, int influxdbInterval, String influxdbUrl, String infludbUser, String influxdbpass, String influxdbDbname, String policy, String duration, String replication, String clear) {
 
         this.ip = ip;
         this.snmpPort = snmpPort;

@@ -1,4 +1,4 @@
-package com.unicom.cadvisor;
+package com.unicom.chanyi.cadvisor;
 
 public class HttpGetInfo {
 	private String status;// 省份

@@ -1,4 +1,4 @@
-package com.unicom.chanyi.advisor;
+package com.unicom.chanyi.hostadvisor;
 
 
 import com.unicom.chanyi.influxdb.InfluxdbTools;
@@ -12,30 +12,30 @@ import org.snmp4j.smi.OID;
 import java.io.IOException;
 import java.util.*;
 
-public class CollectThread extends Observable implements Runnable {
+public class HostCollectThread extends Observable implements Runnable {
 
     private InfluxdbTools influxdbTools;
 
     private SnmpTools snmpTools;
 
-    private Args args;
+    private HostArgs HostArgs;
 
-    private Logger logger = Logger.getLogger(CollectThread.class);
+    private Logger logger = Logger.getLogger(HostCollectThread.class);
 
-    public CollectThread(InfluxdbTools influxdbTools, SnmpTools snmpTools, Args args) {
+    public HostCollectThread(InfluxdbTools influxdbTools, SnmpTools snmpTools, HostArgs HostArgs) {
         this.influxdbTools = influxdbTools;
         this.snmpTools = snmpTools;
-        this.args = args;
+        this.HostArgs = HostArgs;
     }
 
-    public Args getArgs() {
-        return args;
+    public HostArgs getHostArgs() {
+        return HostArgs;
     }
 
     // 通知观察者
-    public void sendNotify(Args args) {
+    public void sendNotify(HostArgs HostArgs) {
         super.setChanged();
-        notifyObservers(args);
+        notifyObservers(HostArgs);
     }
 
     @Override
@@ -45,24 +45,25 @@ public class CollectThread extends Observable implements Runnable {
             this.snmpTools.init();
         } catch (IOException e) {
             logger.error(e.getMessage());
-            sendNotify(this.getArgs());
+            sendNotify(this.getHostArgs());
+            return;
         }
         try {
             this.influxdbTools.init();
         } catch (Exception e) {
             logger.error(e.getMessage());
-            sendNotify(this.getArgs());
+            sendNotify(this.getHostArgs());
+            return;
         }
 
 
-        int count = 0;
         while (true) {
 
             try {
-                Thread.sleep(this.args.getInfluxdbInterval());
+                Thread.sleep(this.HostArgs.getInfluxdbInterval());
             } catch (InterruptedException e) {
                 logger.error(e.getMessage());
-                sendNotify(this.getArgs());
+                sendNotify(this.getHostArgs());
                 return;
             }
 
@@ -175,7 +176,7 @@ public class CollectThread extends Observable implements Runnable {
             try {
                 this.oprate(oids, valueMapName, nameMapType, typeMapList);
             } catch (Exception e) {
-                this.sendNotify(this.getArgs());
+                this.sendNotify(this.getHostArgs());
                 return;
             }
 
@@ -187,7 +188,7 @@ public class CollectThread extends Observable implements Runnable {
                 snmpResults_disk = snmpTools.getList(oid_disk);
             } catch (IOException e) {
                 logger.error(e.getMessage());
-                sendNotify(this.getArgs());
+                sendNotify(this.getHostArgs());
                 return;
             }
 
@@ -242,7 +243,7 @@ public class CollectThread extends Observable implements Runnable {
                 try {
                     this.oprate(oids_disk, valueMapName_disk, nameMapType_disk, typeMapList_disk);
                 } catch (Exception e) {
-                    this.sendNotify(this.getArgs());
+                    this.sendNotify(this.getHostArgs());
                     return;
                 }
 
@@ -255,7 +256,7 @@ public class CollectThread extends Observable implements Runnable {
                 snmpResults_network = snmpTools.getList(oid_network);
             } catch (IOException e) {
                 logger.error(e.getMessage());
-                sendNotify(this.getArgs());
+                sendNotify(this.getHostArgs());
                 return;
             }
 
@@ -302,18 +303,18 @@ public class CollectThread extends Observable implements Runnable {
                 try {
                     this.oprate(oids_network, valueMapName_network, nameMapType_network, typeMapList_network);
                 } catch (Exception e) {
-                    this.sendNotify(this.getArgs());
+                    this.sendNotify(this.getHostArgs());
                     return;
                 }
 
             }
 
-            logger.debug("-------------------");
+            logger.info("-------------------");
 
             /*
             count++;
             if (count > 10) {
-                sendNotify(this.getArgs());
+                sendNotify(this.getConArgs());
                 break;
             }
             */
@@ -355,7 +356,7 @@ public class CollectThread extends Observable implements Runnable {
         } catch (InfluxdbToolsException e) {
             throw new Exception(e.getMessage());
         }
-        logger.debug(typeMapList);
+        logger.info(typeMapList);
 
     }
 

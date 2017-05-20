@@ -41,9 +41,9 @@ public class InfluxdbTools {
             influxDB.deleteDatabase(this.dbname);
         }
 
-        this.influxDB.createDatabase(this.dbname);
+        //this.influxDB.createDatabase(this.dbname);
 
-        Query query = new Query("CREATE RETENTION POLICY \""+this.policy+"\" ON \"hostAdvisor\" DURATION "+this.duration+" REPLICATION "+this.replication+" DEFAULT",this.dbname);
+        Query query = new Query("CREATE RETENTION POLICY \""+this.policy+"\" ON \""+this.dbname+"\" DURATION "+this.duration+" REPLICATION "+this.replication+" DEFAULT",this.dbname);
         influxDB.query(query);
 
     }

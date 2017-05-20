@@ -1,4 +1,4 @@
-package com.unicom.cadvisor;
+package com.unicom.chanyi.cadvisor;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -11,16 +11,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-/**
- * Created by yuan on 2017/5/19.
- */
 public class HttpUtil {
     // get方法获取message
     public static HttpGetInfo getByHttpGet(String url) throws Exception {
         HttpGetInfo info = new HttpGetInfo();
-        String result=null;
-        String status="";
-        try{
+        String result = null;
+        String status = "";
+        try {
             HttpClient httpclient = HttpClients.createDefault();
             HttpGet get = new HttpGet(url);
             //数据类型转化
@@ -34,10 +31,10 @@ public class HttpUtil {
             if (entity != null) {
                 InputStream instreams;
                 instreams = entity.getContent();
-                result = new String(convertStreamToString(instreams).getBytes(),"UTF-8");
+                result = new String(convertStreamToString(instreams).getBytes(), "UTF-8");
                 get.abort();
             }
-        }catch(IOException e){
+        } catch (IOException e) {
             System.out.print(e.getMessage());
             status = "exception";
             info.setStatus(status);
@@ -50,6 +47,7 @@ public class HttpUtil {
         info.setMessage(result);
         return info;
     }
+
     // 将流转化为字符串
     private static String convertStreamToString(InputStream is) {
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
