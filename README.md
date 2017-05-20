@@ -2,14 +2,15 @@
 
 利用net-snmp获取主机的各种参数到MIB中，然后采集这些参数到influxDB中，而数据的展示可以使用Grafana。
 
-本程序完成MIB到influxDB的采集过程。
+本程序完成从各个主机的MIB采集到influxDB的过程，以实现资源信息集中化。
+
+为此，你需要在每台主机至少运行一个该程序。
 
 关于net-snmp、influxDB、Grafana请自行搜索相关信息。
 
 特点：
 1. 简单轻巧
 2. 异常自动重启
-3. 跨平台
 
 ## 安装net-snmp工具：
 <pre>
@@ -69,7 +70,6 @@ git clone 代码，然后cd到源程序根目录，使用Maven打包程序：
 <pre>
 maven package
 </pre>
-要求jdk1.7。
 
 不出意外，你将在此目录下的target包下发现 hostadvisor-1.0.jar 可执行文件。
 
@@ -129,8 +129,6 @@ docker run -ti \
 
 日志挂载到/root/logs目录下。
 
-当然你也可以放到marathon里进行调度。
-
 ## 安装Grafana
 这里使用docker版本
 <pre>
@@ -143,7 +141,7 @@ http://192.168.1.102:3000
 </pre>
 
 使用admin/admin进行登录，配置grafana：
-1. Adding the data source ，在这个面板里配置Influxdb的连接信息（端口为8060），advisor数据库的认证信息(root/root)。
+1. Adding the data source ，在这个面板里配置Influxdb的连接信息（端口为8086），advisor数据库的认证信息(root/root)。
 ![editDataSource.png](images/editDataSource.png)
 
 2. Adding Dashboards ,添加一个Graph，如下：
