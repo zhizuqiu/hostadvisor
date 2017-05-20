@@ -266,7 +266,7 @@ public class HostCollectThread extends Observable implements Runnable {
             typeMapList_network.put("network", new HashMap<String, String>());
 
 
-            for (SnmpResult snmpResult : snmpResults_disk) {
+            for (SnmpResult snmpResult : snmpResults_network) {
                 String ifDescr = "1.3.6.1.2.1.2.2.1.2." + snmpResult.getVariable();
                 String ifInOctets = "1.3.6.1.2.1.2.2.1.10." + snmpResult.getVariable();
                 String ifOutOctets = "1.3.6.1.2.1.2.2.1.16." + snmpResult.getVariable();
