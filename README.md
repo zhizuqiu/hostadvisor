@@ -1,7 +1,15 @@
 主机资源监控的方式多种多样，这里提供了一种方式：
+
 利用net-snmp获取主机的各种参数到MIB中，然后采集这些参数到influxDB中，而数据的展示可以使用Grafana。
+
 本程序完成MIB到influxDB的采集过程。
+
 关于net-snmp、influxDB、Grafana请自行搜索相关信息。
+
+特点：
+1. 简单轻巧
+2. 异常自动重启
+3. 跨平台
 
 ## 安装net-snmp工具：
 <pre>
@@ -61,6 +69,7 @@ git clone 代码，然后cd到源程序根目录，使用Maven打包程序：
 <pre>
 maven package
 </pre>
+要求jdk1.7。
 
 不出意外，你将在此目录下的target包下发现 hostadvisor-1.0.jar 可执行文件。
 
@@ -80,14 +89,22 @@ String clear = "false";                                   // 每次启动是否�
 int influxdbInterval = 5000;                              // 采集频率，单位毫秒
 </pre>
 
+使用以下命令执行程序：
+<pre>
+java -jar hostadvisor-1.0.jar
+</pre>
+
+日志打在运行目录的logs目录下。
+
 当然，如果你想打成docker镜像，可以将type设置为pro，然后程序就会从系统环境变量中读取这些配置参数，而我就是这样做的。
+
 最终在influxDB的相应数据库（上面设置的是advisor）中，你将看到cpu、disk、mem、network等MEASUREMENTS（表）。
 ![showMeasu.png](images/showMeasu.png)
 
 查询cpu你将看到：
 ![influxDBquery.png](images/influxDBquery.png)
 
-## 打docker镜像
+## 打docker镜像(可选)
 将docker目录下的Dockerfile文件copy到target目录下，然后执行docker build命令：
 <pre>
 docker build -t="hostadvisor:v1" .
@@ -95,7 +112,7 @@ docker build -t="hostadvisor:v1" .
 
 启容器：
 <pre>
-docker run -ti -d \
+docker run -ti \
  -e snmpPort=161 \
  -e influxdb_url=http://192.168.1.102:8086 \
  -e influxdb_username=root \
@@ -106,8 +123,11 @@ docker run -ti -d \
  -e duration=7d \
  -e replication=1 \
  -e clear=false \
+ -v /root/logs/:/logs/:rw \
  hostadvisor:v1
 </pre>
+
+日志挂载到/root/logs目录下。
 
 当然你也可以放到marathon里进行调度。
 
@@ -121,11 +141,11 @@ docker run -d -p 3000:3000 -e INFLUXDB_HOST=192.168.84.137  -e INFLUXDB_PORT=808
 <pre>
 http://192.168.1.102:3000
 </pre>
+
 使用admin/admin进行登录，配置grafana：
-1. Adding the data source ，
-在这个面板里配置Influxdb的连接信息（端口为8060），advisor数据库的认证信息(root/root)。
+1. Adding the data source ，在这个面板里配置Influxdb的连接信息（端口为8060），advisor数据库的认证信息(root/root)。
 ![editDataSource.png](images/editDataSource.png)
-2. Adding Dashboards ,
-添加一个Graph，如下：
+
+2. Adding Dashboards ,添加一个Graph，如下：
 ![addQuery.png](images/addQuery.png)
 想看什么参数，就添加什么样的查询语句，就是如此的简单。
