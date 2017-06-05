@@ -69,11 +69,11 @@ public class HostCollectThread extends Observable implements Runnable {
 
 
             //<"cpu",<"name","variable">>
-            Map<String, Map<String, String>> typeMapList = new HashMap<String, Map<String, String>>();
+            Map<String, Map<String, Object>> typeMapList = new HashMap<String, Map<String, Object>>();
 
             //初始化typeMapList
-            typeMapList.put("cpu", new HashMap<String, String>());
-            typeMapList.put("mem", new HashMap<String, String>());
+            typeMapList.put("cpu", new HashMap<String, Object>());
+            typeMapList.put("mem", new HashMap<String, Object>());
 
             //name = value
             //cpu
@@ -193,9 +193,9 @@ public class HostCollectThread extends Observable implements Runnable {
             }
 
             //<"disk",<"name","variable">>
-            Map<String, Map<String, String>> typeMapList_disk = new HashMap<String, Map<String, String>>();
+            Map<String, Map<String, Object>> typeMapList_disk = new HashMap<String, Map<String, Object>>();
             //初始化typeMapList
-            typeMapList_disk.put("disk", new HashMap<String, String>());
+            typeMapList_disk.put("disk", new HashMap<String, Object>());
 
 
             for (SnmpResult snmpResult : snmpResults_disk) {
@@ -261,9 +261,9 @@ public class HostCollectThread extends Observable implements Runnable {
             }
 
             //<"network",<"name","variable">>
-            Map<String, Map<String, String>> typeMapList_network = new HashMap<String, Map<String, String>>();
+            Map<String, Map<String, Object>> typeMapList_network = new HashMap<String, Map<String, Object>>();
             //初始化typeMapList
-            typeMapList_network.put("network", new HashMap<String, String>());
+            typeMapList_network.put("network", new HashMap<String, Object>());
 
 
             for (SnmpResult snmpResult : snmpResults_network) {
@@ -322,7 +322,7 @@ public class HostCollectThread extends Observable implements Runnable {
         }
     }
 
-    private void oprate(List<OID> oids, Map<String, String> valueMapName, Map<String, String> nameMapType, Map<String, Map<String, String>> typeMapList) throws Exception {
+    private void oprate(List<OID> oids, Map<String, String> valueMapName, Map<String, String> nameMapType, Map<String, Map<String, Object>> typeMapList) throws Exception {
         List<SnmpResult> snmpResults = new ArrayList<SnmpResult>();
         try {
             snmpResults = snmpTools.getOne(oids);
@@ -335,13 +335,13 @@ public class HostCollectThread extends Observable implements Runnable {
 
         for (SnmpResult snmpResult : snmpResults) {
             String name = valueMapName.get(snmpResult.getOid().toString());
-            String variable = snmpResult.getVariable().toString();
+            Object variable = snmpResult.getVariable();
             if (name != null) {
                 String type = nameMapType.get(name);
                 if (type != null) {
-                    Map<String, String> map = typeMapList.get(type);
+                    Map<String, Object> map = typeMapList.get(type);
                     if (map == null) {
-                        map = new HashMap<String, String>();
+                        map = new HashMap<String, Object>();
                     }
                     map.put(name, variable);
                 } else {

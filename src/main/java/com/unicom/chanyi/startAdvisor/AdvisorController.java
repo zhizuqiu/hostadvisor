@@ -16,10 +16,10 @@ public class AdvisorController {
     public static void main(String[] arg) throws Exception {
 
         //配置信息
-        String type = "test";                                     // test 为以下的默认值， pro 为读取系统的环境变量
-        String ip = "192.168.1.102";                            // 要采集主机的IP
+        String type = "pro";                                     // test 为以下的默认值， pro 为读取系统的环境变量
+        String ip = "192.168.84.137";                            // 要采集主机的IP
         String snmpPort = "161";                                  // 要采集主机的net-snmp端口，默认为161
-        String influxdb_url = "http://192.168.1.102:8086";    // influxDB的ip和端口
+        String influxdb_url = "http://192.168.84.137:8086";    // influxDB的ip和端口
         String influxdb_username = "root";                        // influxDB的用户名
         String influxdb_password = "root";                        // influxDB的用户密码
         String influxdb_dbname = "advisor";                      // influxDB的数据库名字
