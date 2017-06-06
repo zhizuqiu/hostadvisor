@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="utf-8">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+    <meta name="description" content=""/>
+    <meta name="author" content="ThemeBucket"/>
+
+    <title>hostadvisor</title>
+
+    <!-- Bootstrap -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet"/>
+
+    <!-- Bootstrap-table -->
+    <link href="/css/bootstrap-table.min.css" rel="stylesheet"/>
+    <!-- 图表 -->
+    <link href="/js/flot-chart/examples.css" rel="stylesheet" type="text/css"/>
+    <!-- datetimepicker  -->
+    <link href="/js/datetimepicker/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css"/>
+
+    <!-- easy pie chart -->
+    <link href="/css/easypiechart-style.css" rel="stylesheet"/>
+
+    <!--[if lt IE 9]>
+    <script src="/js/html5shiv.min.js"></script>
+    <script src="/js/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Placed js at the end of the document so the pages load faster -->
+    <script src="/js/jquery-1.10.2.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+
+    <!--bootstrap table-->
+    <script src="/js/bootstrap-table.js"></script>
+    <script src="/js/bootstrap-table-zh-CN.js"></script>
+
+
+    <!-- 图表 -->
+    <script src="/js/flot-chart/jquery.flot.js"></script>
+    <script src="/js/flot-chart/jquery.flot.time.js"></script>
+
+    <!-- datetimepicker -->
+    <script type="text/javascript" src="/js/datetimepicker/bootstrap-datetimepicker.js"></script>
+    <script type="text/javascript" src="/js/datetimepicker/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+
+    <!-- easy pie chart -->
+    <script type="text/javascript" src="/js/easypiechart/jquery.easypiechart.min.js"></script>
+
+
+    <script src="/js/hostadvisor/hostAdvisor.js"></script>
+
+</head>
+<body>
+<div class="row">
+    <div class="col-md-12">
+        <section class="panel">
+            <header class="panel-heading custom-tab ">
+                <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a href="#CPU" data-toggle="tab">CPU</a>
+                    </li>
+                    <li class="">
+                        <a href="#MEM" data-toggle="tab">MEM</a>
+                    </li>
+                    <li class="">
+                        <a href="#DISK" data-toggle="tab" onclick="">DISK</a>
+                    </li>
+                    <li class="">
+                        <a href="#NETWORK" data-toggle="tab" onclick="">NETWORK</a>
+                    </li>
+                </ul>
+            </header>
+            <div class="panel-body">
+                <div class="tab-content">
+                    <div class="tab-pane active" id="CPU">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <section class="panel">
+                                    <div class="panel-body" style="padding-bottom: 10px">
+
+                                        <div class="adv-table">
+                                            <table class="display table table-bordered" id="table"></table>
+                                        </div>
+
+                                    </div>
+                                </section>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="MEM">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <section class="panel">
+                                    <div class="panel-body" style="padding-bottom: 10px">
+
+                                        <div class="adv-table">
+                                            <table class="display table table-bordered" id="table_mem"></table>
+                                        </div>
+
+                                    </div>
+                                </section>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="DISK">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <section class="panel">
+                                    <div class="panel-body" style="padding-bottom: 10px">
+
+                                        <div style="display:inline;float:left">
+                                            <ul class="list-unstyled list-inline">
+                                                <li>
+                                                    <select id="select-diskip" class="form-control"></select>
+                                                </li>
+                                                <li>
+                                                    <select id="select-diskpath" class="form-control"></select>
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                        <div class="adv-table">
+                                            <table class="display table table-bordered" id="table_disk"></table>
+                                        </div>
+
+                                    </div>
+                                </section>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="NETWORK">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <section class="panel">
+                                    <div class="panel-body" style="padding-bottom: 10px">
+
+                                        <div style="display:inline;float:left">
+                                            <ul class="list-unstyled list-inline">
+                                                <li>
+                                                    <select id="select-ifip" class="form-control"></select>
+                                                </li>
+                                                <li>
+                                                    <select id="select-ifdescr" class="form-control"></select>
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                        <div class="adv-table">
+                                            <table class="display table table-bordered" id="table_if"></table>
+                                        </div>
+
+                                    </div>
+                                </section>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<!-- 详情 -->
+<div class="modal fade" id="modalTable" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content modal-panel-add">
+            <div class="modal-header modal-header-darkblue">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">详情</h4>
+            </div>
+            <div class="modal-body" style="padding:0">
+
+                <section class="panel">
+                    <header class="panel-heading">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div style="float:left;width:50%;padding:0;margin:0;display:inline">
+                                    <div style="margin-bottom:10px">ip:
+                                        <lable id="lable-ip"></lable>
+                                    </div>
+                                    <div style="margin-bottom:10px">type:
+                                        <lable id="lable-table"></lable>
+                                    </div>
+                                    <div id="lable-name-div" style="margin-bottom:10px">name:
+                                        <lable id="lable-name"></lable>
+                                    </div>
+                                    <div style="width:200px">
+                                        <select id="select-keys" class="form-control"></select>
+                                    </div>
+                                </div>
+                                <div id="pie-chart-div" style="float:right;">
+                                    <span class="chart" data-percent="0">
+                                        <span class="percent"></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </header>
+
+                    <div class="panel-body">
+                        <div id="cpuline" style="width:100%; height:300px"></div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <label class="col-md-12 control-label" style="text-align:left">From</label>
+                                        <div class="input-group date form_datetime col-md-12">
+                                            <input id="input-time-from" class="form-control" size="16" type="text" value=""/>
+                                            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <label class="col-md-12 control-label" style="text-align:left">To</label>
+                                        <div class="input-group date form_datetime col-md-12">
+                                            <input id="input-time-to" class="form-control" size="16" type="text" value=""/>
+                                            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label class="col-md-12 control-label">Apply</label>
+                                        <div>
+                                            <button id="button-apply" type="button" class="btn btn-primary">确认
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!-- /.详情 -->
+
+
+</body>
+</html>

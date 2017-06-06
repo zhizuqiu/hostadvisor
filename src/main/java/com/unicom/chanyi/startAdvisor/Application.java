@@ -7,13 +7,17 @@ import com.unicom.chanyi.hostadvisor.HostListener;
 import com.unicom.chanyi.influxdb.InfluxdbTools;
 import com.unicom.chanyi.snmp.SnmpTools;
 import org.apache.log4j.Logger;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-public class AdvisorController {
+@SpringBootApplication
+public class Application {
 
-    private static Logger logger = Logger.getLogger(AdvisorController.class);
-
+    private static Logger logger = Logger.getLogger(Application.class);
 
     public static void main(String[] arg) throws Exception {
+
+        SpringApplication.run(Application.class, arg);
 
         //配置信息
         String type = "pro";                                     // test 为以下的默认值， pro 为读取系统的环境变量
@@ -35,7 +39,8 @@ public class AdvisorController {
 
         if (type.equals("pro")) {
 
-            ip = commonTools.getHostIp(commonTools.getInetAddress());
+            //ip = commonTools.getHostIp(commonTools.getInetAddress());
+            ip = System.getenv("ip");
             snmpPort = System.getenv("snmpPort");
             influxdb_url = System.getenv("influxdb_url");
             influxdb_username = System.getenv("influxdb_username");
