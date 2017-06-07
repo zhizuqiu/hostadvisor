@@ -1,6 +1,6 @@
 主机资源监控的方式多种多样，这里提供了一种方式：
 
-利用net-snmp获取主机的各种参数到MIB中，然后采集这些参数到influxDB中，而数据的展示可以使用Grafana。
+利用net-snmp获取主机的各种参数到MIB中，然后采集这些参数到influxDB中，而数据的展示可以使用hostadvisor-ui分支提供的UI或Grafana。
 
 本程序完成从各个主机的MIB采集到influxDB的过程，以实现资源信息集中化。
 
@@ -129,7 +129,15 @@ docker run -ti \
 
 日志挂载到/root/logs目录下。
 
-## 安装Grafana
+## 数据页面展示
+本项目提供的UI如下：
+
+![ui-mem.png](images/ui-mem.png)
+
+请转到hostadvisor-ui分支下，进行配置。
+
+如果你想自定义数据显示，可以使用Grafana。
+## Grafana
 这里使用docker版本
 <pre>
 docker run -d -p 3000:3000 -e INFLUXDB_HOST=192.168.84.137  -e INFLUXDB_PORT=8086 -e INFLUXDB_NAME=cadvisor -e INFLUXDB_USER=root -e INFLUXDB_PASS=root --link influxsrv:influxsrv --name grafana grafana/grafana
