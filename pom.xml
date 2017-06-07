@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>renfh8</groupId>
-    <artifactId>hostadvisor</artifactId>
+    <artifactId>hostadvisor-ui</artifactId>
     <version>1.0</version>
 
     <parent>
@@ -58,35 +58,6 @@
             <artifactId>influxdb-java</artifactId>
             <version>2.5</version>
         </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.snmp4j/snmp4j -->
-        <dependency>
-            <groupId>org.snmp4j</groupId>
-            <artifactId>snmp4j</artifactId>
-            <version>2.5.6</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.5.1</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpcore -->
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpcore</artifactId>
-            <version>4.4.3</version>
-        </dependency>
-
-        <dependency>
-            <groupId>net.sf.json-lib</groupId>
-            <artifactId>json-lib</artifactId>
-            <classifier>jdk15</classifier>
-            <version>2.2.3</version>
-        </dependency>
-
 
     </dependencies>
 

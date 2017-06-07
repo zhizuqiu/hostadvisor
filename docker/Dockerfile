@@ -1,6 +1,6 @@
 FROM frolvlad/alpine-oraclejdk8:slim
 VOLUME /tmp
-ADD hostadvisor-1.0.jar app.jar
+ADD hostadvisor-ui-1.0.jar app.jar
 RUN sh -c 'touch /app.jar'
 ENV JAVA_OPTS=""
 EXPOSE 8088

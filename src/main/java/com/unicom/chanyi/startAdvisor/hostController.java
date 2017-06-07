@@ -66,14 +66,14 @@ public class hostController {
 
         Object table_obj = param.get("table");
         if (null == table_obj) {
-            return new ArrayList<Map<String,String>>();
+            return new ArrayList<>();
         }
         String table = table_obj.toString();
 
         String sql = "select * from \""+policy+"\"." + table + " group by ip order by time desc limit 1;";
         influxdbParam.put("sql", sql);
 
-        List<Map<String,String>> hostList = new ArrayList<Map<String,String>>();
+        List<Map<String,String>> hostList = new ArrayList<>();
 
         try {
             hostList = this.getInfluxdbListBySql(influxdbParam);
@@ -82,7 +82,7 @@ public class hostController {
         }
 
         if (hostList == null) {
-            return new ArrayList<Map<String,String>>();
+            return new ArrayList<>();
         }
         return hostList;
     }
@@ -99,7 +99,7 @@ public class hostController {
         Object table_obj = param.get("table");
         Object ip_obj = param.get("ip");
         if (key_obj == null || table_obj == null || ip_obj == null) {
-            return new ArrayList<Map<String,String>>();
+            return new ArrayList<>();
         }
         String key = key_obj.toString();
         String table = table_obj.toString();
@@ -117,7 +117,7 @@ public class hostController {
         }
 
         if (hostList == null) {
-            return new ArrayList<Map<String,String>>();
+            return new ArrayList<>();
         }
         return hostList;
     }
@@ -135,7 +135,7 @@ public class hostController {
         Object table_obj = param.get("table");
         Object ip_obj = param.get("ip");
         if (keyname_obj == null || key_obj == null || table_obj == null || ip_obj == null) {
-            return new ArrayList<Map<String,String>>();
+            return new ArrayList<>();
         }
         String keyname = keyname_obj.toString();
         String key = key_obj.toString();
@@ -144,7 +144,7 @@ public class hostController {
 
         String sql = "select * from \""+policy+"\"." + table + " where " + keyname + " = '" + key + "' and ip = '" + ip + "' order by time desc limit 1;";
         influxdbParam.put("sql", sql);
-        List<Map<String,String>> hostList = new ArrayList<Map<String,String>>();
+        List<Map<String,String>> hostList = new ArrayList<>();
 
         try {
             hostList = this.getInfluxdbListBySql(influxdbParam);
@@ -153,7 +153,7 @@ public class hostController {
         }
 
         if (hostList == null) {
-            return new ArrayList<Map<String,String>>();
+            return new ArrayList<>();
         }
         return hostList;
     }
@@ -170,14 +170,14 @@ public class hostController {
         Object ip_obj = param.get("ip");
         Object table_obj = param.get("table");
         if (null == ip_obj || null == table_obj) {
-            return new ArrayList<Map<String,String>>();
+            return new ArrayList<>();
         }
         String ip = ip_obj.toString();
         String table = table_obj.toString();
 
         String sql = "select * from \""+policy+"\"." + table + " where ip= '" + ip + "' order by time desc limit 1;";
         influxdbParam.put("sql", sql);
-        List<Map<String,String>> hostList = new ArrayList<Map<String,String>>();
+        List<Map<String,String>> hostList = new ArrayList<>();
 
         try {
             hostList = this.getInfluxdbListBySql(influxdbParam);
@@ -186,7 +186,7 @@ public class hostController {
         }
 
         if (hostList == null) {
-            return new ArrayList<Map<String,String>>();
+            return new ArrayList<>();
         }
         return hostList;
     }
@@ -210,7 +210,7 @@ public class hostController {
         Object group_time_obj = param.get("group_time");
 
         if (null == ip_obj || key_obj == null || table_obj == null || limit_obj == null || timer_type_obj == null) {
-            return new ArrayList<Map<String,String>>();
+            return new ArrayList<>();
         }
         String ip = ip_obj.toString();
         String key = key_obj.toString();
@@ -224,7 +224,7 @@ public class hostController {
 
         if (table.equals("disk") || table.equals("network")) {
             if (name_obj == null) {
-                return new ArrayList<Map<String,String>>();
+                return new ArrayList<>();
             } else {
                 name = name_obj.toString();
             }
@@ -232,7 +232,7 @@ public class hostController {
 
         if (timer_type.equals("1")) {
             if (from_time_obj == null || to_time_obj == null || group_time_obj == null) {
-                return new ArrayList<Map<String,String>>();
+                return new ArrayList<>();
             } else {
                 from_time = from_time_obj.toString();
                 to_time = to_time_obj.toString();
@@ -311,14 +311,14 @@ public class hostController {
         }
         influxdbParam.put("sql", sql);
 
-        List<Map<String,String>> hostList = new ArrayList<Map<String,String>>();
+        List<Map<String,String>> hostList = new ArrayList<>();
         try {
             hostList = this.getInfluxdbListBySql(influxdbParam);
         } catch (Exception e){
             logger.error(e.getMessage());
         }
         if (hostList == null) {
-            return new ArrayList<Map<String,String>>();
+            return new ArrayList<>();
         }
         return hostList;
     }
@@ -344,7 +344,7 @@ public class hostController {
         Query query = new Query(sql, dbName);
         QueryResult queryResult = influxDB.query(query);
 
-        List<Map<String,String>> result = new ArrayList<Map<String,String>>();
+        List<Map<String,String>> result = new ArrayList<>();
 
         List<QueryResult.Result> qResult = queryResult.getResults();
         if (qResult != null && qResult.size() > 0) {
@@ -365,7 +365,7 @@ public class hostController {
                             List<List<Object>> values = se.getValues();
                             if (values != null && values.size() > 0) {
                                 for (List<Object> value : values) {
-                                    Map<String,String> map = new HashMap<String,String>();
+                                    Map<String,String> map = new HashMap<>();
                                     if (ip != null) {
                                         map.put("ip", ip);
                                     }
