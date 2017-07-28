@@ -5,6 +5,9 @@ import org.influxdb.InfluxDBFactory;
 import org.influxdb.dto.BatchPoints;
 import org.influxdb.dto.Point;
 import org.influxdb.dto.Query;
+import org.snmp4j.smi.Counter32;
+import org.snmp4j.smi.Counter64;
+import org.snmp4j.smi.Integer32;
 
 import java.util.List;
 import java.util.Map;
@@ -54,6 +57,7 @@ public class InfluxdbTools {
         this.influxDB.close();
     }
 
+
     public void insert(List<InsertValue> insertValueList) throws InfluxdbToolsException {
         try {
             BatchPoints batchPoints = BatchPoints
@@ -75,12 +79,13 @@ public class InfluxdbTools {
         }
     }
 
-    public void insert(Map<String, Map<String, String>> typeMapList,String snmpIp) throws InfluxdbToolsException {
+
+    public void insert(Map<String, Map<String, Object>> typeMapList,String snmpIp) throws InfluxdbToolsException {
 
         try {
-            for (Map.Entry<String, Map<String, String>> entry : typeMapList.entrySet()) {
+            for (Map.Entry<String, Map<String, Object>> entry : typeMapList.entrySet()) {
                 String type = entry.getKey();
-                Map<String, String> nameMapVariable = entry.getValue();
+                Map<String, Object> nameMapVariable = entry.getValue();
 
                 BatchPoints batchPoints = BatchPoints
                         .database(this.dbname)
@@ -90,12 +95,27 @@ public class InfluxdbTools {
                 Point.Builder builder = Point.measurement(type);
                 builder.time(System.currentTimeMillis(), TimeUnit.MILLISECONDS);
 
-                for (Map.Entry<String, String> entry_inner : nameMapVariable.entrySet()) {
+                for (Map.Entry<String, Object> entry_inner : nameMapVariable.entrySet()) {
                     String name = entry_inner.getKey();
-                    String variable = entry_inner.getValue();
-                    builder.addField(name, variable);
+                    Object value = entry_inner.getValue();
+
+                    if (value instanceof Integer32){
+                        Integer v = ((Integer32) value).toInt();
+                        builder.addField(name, v);
+                    }else if(value instanceof Counter32){
+                        Long v = ((Counter32) value).toLong();
+                        builder.addField(name, v);
+                    }else if(value instanceof Counter64){
+                        Long v = ((Counter64) value).toLong();
+                        builder.addField(name, v);
+                    }else if(value instanceof Number){
+                        Number v = ((Number) value);
+                        builder.addField(name, v);
+                    }else{
+                        builder.addField(name,value.toString());
+                    }
                 }
-                builder.addField("ip",snmpIp);
+                builder.tag("ip",snmpIp);
 
                 Point point = builder.build();
                 batchPoints.point(point);
