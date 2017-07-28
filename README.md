@@ -2,7 +2,7 @@
 ## 编译程序：
 git clone 代码，然后cd到源程序根目录，使用Maven打包程序：
 <pre>
-maven package
+mvn package
 </pre>
 
 不出意外，你将在此目录下的target包下发现 hostadvisor-ui-1.0.jar 可执行文件。
