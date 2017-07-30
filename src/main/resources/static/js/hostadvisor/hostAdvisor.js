@@ -5,6 +5,27 @@ $(function () {
     basePath = location[0] + '//' + location[2] + '/' + location[3];
 });
 
+var OPTIONMAP = {
+    "ssCpuUser": "用户CPU百分比",
+    "ssCpuSystem": "系统CPU百分比",
+    "ssCpuIdle": "空闲CPU百分比",
+    "memUsedPer": "内存占用百分比",
+    "memAvailReal": "已使用内存",
+    "memBuffer": "Buffered",
+    "memCached": "Cached",
+    "memTotalReal": "总内存",
+    "dskPercent": "磁盘使用百分比",
+    "dskUsed": "已用容量",
+    "dskAvail": "可用容量",
+    "dskTotal": "总容量",
+    "dskIndex": "磁盘编号",
+    "ifInOctets":"接口输入的字节数",
+    "ifOutOctets":"接口输出的字节数",
+    "ifInUcastPkts":"接口接收的数据包个数",
+    "ifOutUcastPkts":"接口发送的数据包个数",
+    "time": "时间"
+};
+
 //定时器
 var TIMER;
 //定时器的时间间隔
@@ -612,7 +633,7 @@ function showMore() {
     var table = $("#lable-table").html();
 
     var index = $("#select-keys")[0].selectedIndex;
-    var key = $("#select-keys")[0].options[index].text;
+    var key = $("#select-keys")[0].options[index].value;
 
     var name = null;
     if (table == 'disk' || table == 'network') {
@@ -759,7 +780,7 @@ function showKeyList() {
 
                 for (x in mess[0]) {
                     if (x != "time" && x != "ip" && x != "dskDevice" && x != "dskPath" && x != "ifDescr") {
-                        $("#select-keys").append('<option value ="'+x+'">' + x + '</option>');
+                        $("#select-keys").append('<option value ="' + x + '">' + OPTIONMAP[x] + '</option>');
                     }
                 }
 
