@@ -28,12 +28,12 @@ public class HostCollectThread extends Observable implements Runnable {
         this.HostArgs = HostArgs;
     }
 
-    public HostArgs getHostArgs() {
+    private HostArgs getHostArgs() {
         return HostArgs;
     }
 
     // 通知观察者
-    public void sendNotify(HostArgs HostArgs) {
+    private void sendNotify(HostArgs HostArgs) {
         super.setChanged();
         notifyObservers(HostArgs);
     }
@@ -80,6 +80,7 @@ public class HostCollectThread extends Observable implements Runnable {
             String ssCpuUser = "1.3.6.1.4.1.2021.11.9.0";   //用户CPU百分比
             String ssCpuSystem = "1.3.6.1.4.1.2021.11.10.0";    //系统CPU百分比
             String ssCpuIdle = "1.3.6.1.4.1.2021.11.11.0";  //空闲CPU百分比
+            /*
             String ssCpuRawUser = "1.3.6.1.4.1.2021.11.50.0";
             String ssCpuRawNice = "1.3.6.1.4.1.2021.11.51.0";
             String ssCpuRawSystem = "1.3.6.1.4.1.2021.11.52.0";
@@ -87,23 +88,27 @@ public class HostCollectThread extends Observable implements Runnable {
             String ssCpuRawWait = "1.3.6.1.4.1.2021.11.54.0";
             String ssCpuRawKernel = "1.3.6.1.4.1.2021.11.55.0";
             String ssCpuRawInterrupt = "1.3.6.1.4.1.2021.11.56.0";
+            */
 
             //mem
-            String memTotalSwap = "1.3.6.1.4.1.2021.4.3.0";
-            String memAvailSwap = "1.3.6.1.4.1.2021.4.4.0";
+
             String memTotalReal = "1.3.6.1.4.1.2021.4.5.0";
             String memAvailReal = "1.3.6.1.4.1.2021.4.6.0";
-            String memTotalFree = "1.3.6.1.4.1.2021.4.11.0";
-            String memShared = "1.3.6.1.4.1.2021.4.13.0";
             String memBuffer = "1.3.6.1.4.1.2021.4.14.0";
             String memCached = "1.3.6.1.4.1.2021.4.15.0";
-
+            /*
+            String memShared = "1.3.6.1.4.1.2021.4.13.0";
+            String memTotalFree = "1.3.6.1.4.1.2021.4.11.0";
+            String memTotalSwap = "1.3.6.1.4.1.2021.4.3.0";
+            String memAvailSwap = "1.3.6.1.4.1.2021.4.4.0";
+            */
 
             //<"name","type">
             Map<String, String> nameMapType = new HashMap<String, String>();
             nameMapType.put("ssCpuUser", "cpu");
             nameMapType.put("ssCpuSystem", "cpu");
             nameMapType.put("ssCpuIdle", "cpu");
+            /*
             nameMapType.put("ssCpuRawUser", "cpu");
             nameMapType.put("ssCpuRawNice", "cpu");
             nameMapType.put("ssCpuRawSystem", "cpu");
@@ -111,17 +116,19 @@ public class HostCollectThread extends Observable implements Runnable {
             nameMapType.put("ssCpuRawWait", "cpu");
             nameMapType.put("ssCpuRawKernel", "cpu");
             nameMapType.put("ssCpuRawInterrupt", "cpu");
+            */
 
             //mem
-            nameMapType.put("memTotalSwap", "mem");
-            nameMapType.put("memAvailSwap", "mem");
             nameMapType.put("memTotalReal", "mem");
             nameMapType.put("memAvailReal", "mem");
-            nameMapType.put("memTotalFree", "mem");
             nameMapType.put("memShared", "mem");
             nameMapType.put("memBuffer", "mem");
+            /*
             nameMapType.put("memCached", "mem");
-
+            nameMapType.put("memTotalFree", "mem");
+            nameMapType.put("memTotalSwap", "mem");
+            nameMapType.put("memAvailSwap", "mem");
+            */
 
             //<"value","name">
             Map<String, String> valueMapName = new HashMap<String, String>();
@@ -130,6 +137,7 @@ public class HostCollectThread extends Observable implements Runnable {
             valueMapName.put(ssCpuUser, "ssCpuUser");
             valueMapName.put(ssCpuSystem, "ssCpuSystem");
             valueMapName.put(ssCpuIdle, "ssCpuIdle");
+            /*
             valueMapName.put(ssCpuRawUser, "ssCpuRawUser");
             valueMapName.put(ssCpuRawNice, "ssCpuRawNice");
             valueMapName.put(ssCpuRawSystem, "ssCpuRawSystem");
@@ -137,23 +145,27 @@ public class HostCollectThread extends Observable implements Runnable {
             valueMapName.put(ssCpuRawWait, "ssCpuRawWait");
             valueMapName.put(ssCpuRawKernel, "ssCpuRawKernel");
             valueMapName.put(ssCpuRawInterrupt, "ssCpuRawInterrupt");
+            */
 
             //mem
-            valueMapName.put(memTotalSwap, "memTotalSwap");
-            valueMapName.put(memAvailSwap, "memAvailSwap");
+
             valueMapName.put(memTotalReal, "memTotalReal");
             valueMapName.put(memAvailReal, "memAvailReal");
-            valueMapName.put(memTotalFree, "memTotalFree");
-            valueMapName.put(memShared, "memShared");
             valueMapName.put(memBuffer, "memBuffer");
             valueMapName.put(memCached, "memCached");
-
+            /*
+            valueMapName.put(memTotalFree, "memTotalFree");
+            valueMapName.put(memShared, "memShared");
+            valueMapName.put(memTotalSwap, "memTotalSwap");
+            valueMapName.put(memAvailSwap, "memAvailSwap");
+            */
 
             List<OID> oids = new ArrayList<OID>();
             //cpu
             oids.add(new OID(ssCpuUser));
             oids.add(new OID(ssCpuSystem));
             oids.add(new OID(ssCpuIdle));
+            /*
             oids.add(new OID(ssCpuRawUser));
             oids.add(new OID(ssCpuRawNice));
             oids.add(new OID(ssCpuRawSystem));
@@ -161,16 +173,20 @@ public class HostCollectThread extends Observable implements Runnable {
             oids.add(new OID(ssCpuRawWait));
             oids.add(new OID(ssCpuRawKernel));
             oids.add(new OID(ssCpuRawInterrupt));
+            */
 
             //mem
-            oids.add(new OID(memTotalSwap));
-            oids.add(new OID(memAvailSwap));
+
             oids.add(new OID(memTotalReal));
             oids.add(new OID(memAvailReal));
-            oids.add(new OID(memTotalFree));
-            oids.add(new OID(memShared));
             oids.add(new OID(memBuffer));
             oids.add(new OID(memCached));
+            /*
+            oids.add(new OID(memTotalFree));
+            oids.add(new OID(memShared));
+            oids.add(new OID(memTotalSwap));
+            oids.add(new OID(memAvailSwap));
+            */
 
             //cpu and mem 的操作
             try {
