@@ -121,10 +121,11 @@ public class HostCollectThread extends Observable implements Runnable {
             //mem
             nameMapType.put("memTotalReal", "mem");
             nameMapType.put("memAvailReal", "mem");
-            nameMapType.put("memShared", "mem");
             nameMapType.put("memBuffer", "mem");
-            /*
             nameMapType.put("memCached", "mem");
+
+            /*
+            nameMapType.put("memShared", "mem");
             nameMapType.put("memTotalFree", "mem");
             nameMapType.put("memTotalSwap", "mem");
             nameMapType.put("memAvailSwap", "mem");
