@@ -30,7 +30,7 @@ $(function () {
                     $("#select-diskip").append("<option>" + mess[x].ip + "</option>");
                 }
 
-                initSelectDiskPath();	//初始化diskPath的select
+                TableInit_disk();
             }
         }
     });
@@ -48,28 +48,18 @@ $(function () {
                     $("#select-ifip").append("<option>" + mess[x].ip + "</option>");
                 }
 
-                initSelectIfDescr();	//初始化diskPath的select
+                TableInit_if();
             }
         }
     });
 
 
     $("#select-diskip").change(function () {
-        $("#select-diskpath").html("");
-        initSelectDiskPath();
-    });
-
-    $("#select-diskpath").change(function () {
         var pa = {query: queryParams_disk()};
         $('#table_disk').bootstrapTable('refresh', pa);
     });
 
     $("#select-ifip").change(function () {
-        $("#select-ifdescr").html("");
-        initSelectIfDescr();
-    });
-
-    $("#select-ifdescr").change(function () {
         var pa = {query: queryParams_if()};
         $('#table_if').bootstrapTable('refresh', pa);
     });
@@ -95,7 +85,7 @@ $(function () {
 
     $('.chart').easyPieChart({
         easing: 'easeOutBounce',
-        onStep: function(from, to, percent) {
+        onStep: function (from, to, percent) {
             $(this.el).find('.percent').text(Math.round(percent));
         }
     });
@@ -112,59 +102,6 @@ $(function () {
     });
 
 });
-
-
-
-
-
-
-//初始化diskPath的select
-function initSelectDiskPath() {
-    var index = $("#select-diskip")[0].selectedIndex;
-    var ip = $("#select-diskip")[0].options[index].text;
-
-    //获取diskPath列表
-    $.ajax({
-        type: 'POST',
-        contentType: "application/json",
-        data: JSON.stringify({table: 'disk', key: 'dskPath', ip: ip}),
-        url: basePath + '/getDistinctdList',
-        success: function (mess) {
-            if (mess != undefined && mess.length > 0) {
-
-                for (x in mess) {
-                    $("#select-diskpath").append("<option>" + mess[x].distinct + "</option>");
-                }
-
-                TableInit_disk();	//初始化disk表格
-            }
-        }
-    });
-}
-
-//初始化IfDescr的select
-function initSelectIfDescr() {
-    var index = $("#select-ifip")[0].selectedIndex;
-    var ip = $("#select-ifip")[0].options[index].text;
-
-    //获取diskPath列表
-    $.ajax({
-        type: 'POST',
-        contentType: "application/json",
-        data: JSON.stringify({table: 'network', key: 'ifDescr', ip: ip}),
-        url: basePath + '/getDistinctdList',
-        success: function (mess) {
-            if (mess != undefined && mess.length > 0) {
-
-                for (x in mess) {
-                    $("#select-ifdescr").append("<option>" + mess[x].distinct + "</option>");
-                }
-
-                TableInit_if();	//初始化if表格
-            }
-        }
-    });
-}
 
 var TableInit_cpu = function () {
 
@@ -192,69 +129,37 @@ var TableInit_cpu = function () {
                 field: 'ip',
                 title: 'IP',
                 align: 'center',
-                width: '10%',
+                width: '20%',
                 sortable: true,
                 valign: 'middle'
             },
             {
                 field: 'ssCpuUser',
-                title: 'ssCpuUser',
+                title: '用户CPU百分比',
                 align: 'center',
-                width: '10%',
+                width: '20%',
                 sortable: true,
                 valign: 'middle'
             },
             {
                 field: 'ssCpuSystem',
-                title: 'ssCpuSystem',
+                title: '系统CPU百分比',
                 align: 'center',
-                width: '10%',
+                width: '20%',
                 sortable: true,
                 valign: 'middle'
             },
             {
                 field: 'ssCpuIdle',
-                title: 'ssCpuIdle',
+                title: '空闲CPU百分比',
                 align: 'center',
-                width: '10%',
-                sortable: true,
-                valign: 'middle'
-            },
-            {
-                field: 'ssCpuRawUser',
-                title: 'ssCpuRawUser',
-                align: 'center',
-                width: '10%',
-                sortable: true,
-                valign: 'middle'
-            },
-            {
-                field: 'ssCpuRawSystem',
-                title: 'ssCpuRawSystem',
-                align: 'center',
-                width: '10%',
-                sortable: true,
-                valign: 'middle'
-            },
-            {
-                field: 'ssCpuRawIdle',
-                title: 'ssCpuRawIdle',
-                align: 'center',
-                width: '10%',
-                sortable: true,
-                valign: 'middle'
-            },
-            {
-                field: 'ssCpuRawNice',
-                title: 'ssCpuRawNice',
-                align: 'center',
-                width: '10%',
+                width: '20%',
                 sortable: true,
                 valign: 'middle'
             },
             {
                 field: 'time',
-                title: 'time',
+                title: '时间',
                 align: 'center',
                 width: '10%',
                 sortable: true,
@@ -311,64 +216,41 @@ var TableInit_mem = function () {
                 valign: 'middle'
             },
             {
-                field: 'memAvailReal',
-                title: 'memAvailReal',
+                field: 'memUsedPer',
+                title: '内存占用百分比',
                 align: 'center',
                 width: '10%',
                 sortable: true,
-                valign: 'middle'
+                valign: 'middle',
+                formatter: memUsedFormatter
             },
             {
-                field: 'memAvailSwap',
-                title: 'memAvailSwap',
+                field: 'memAvailReal',
+                title: '已使用内存',
                 align: 'center',
-                width: '10%',
+                width: '20%',
                 sortable: true,
                 valign: 'middle'
             },
             {
                 field: 'memBuffer',
-                title: 'memBuffer',
+                title: 'Buffered',
                 align: 'center',
-                width: '10%',
+                width: '20%',
                 sortable: true,
                 valign: 'middle'
             },
             {
                 field: 'memCached',
-                title: 'memCached',
+                title: 'Cached',
                 align: 'center',
-                width: '10%',
-                sortable: true,
-                valign: 'middle'
-            },
-            {
-                field: 'memShared',
-                title: 'memShared',
-                align: 'center',
-                width: '10%',
-                sortable: true,
-                valign: 'middle'
-            },
-            {
-                field: 'memTotalFree',
-                title: 'memTotalFree',
-                align: 'center',
-                width: '10%',
+                width: '20%',
                 sortable: true,
                 valign: 'middle'
             },
             {
                 field: 'memTotalReal',
-                title: 'memTotalReal',
-                align: 'center',
-                width: '10%',
-                sortable: true,
-                valign: 'middle'
-            },
-            {
-                field: 'memTotalSwap',
-                title: 'memTotalSwap',
+                title: '总内存',
                 align: 'center',
                 width: '10%',
                 sortable: true,
@@ -376,9 +258,9 @@ var TableInit_mem = function () {
             },
             {
                 field: 'time',
-                title: 'time',
+                title: '时间',
                 align: 'center',
-                width: '5%',
+                width: '10%',
                 sortable: true,
                 valign: 'middle',
                 formatter: timeFormatter
@@ -433,32 +315,8 @@ var TableInit_disk = function () {
                 valign: 'middle'
             },
             {
-                field: 'dskAvail',
-                title: 'dskAvail',
-                align: 'center',
-                width: '10%',
-                sortable: true,
-                valign: 'middle'
-            },
-            {
-                field: 'dskDevice',
-                title: 'dskDevice',
-                align: 'center',
-                width: '10%',
-                sortable: true,
-                valign: 'middle'
-            },
-            {
-                field: 'dskIndex',
-                title: 'dskIndex',
-                align: 'center',
-                width: '10%',
-                sortable: true,
-                valign: 'middle'
-            },
-            {
                 field: 'dskPath',
-                title: 'dskPath',
+                title: '挂载路径',
                 align: 'center',
                 width: '10%',
                 sortable: true,
@@ -466,15 +324,15 @@ var TableInit_disk = function () {
             },
             {
                 field: 'dskPercent',
-                title: 'dskPercent',
+                title: '磁盘使用百分比',
                 align: 'center',
                 width: '10%',
                 sortable: true,
                 valign: 'middle'
             },
             {
-                field: 'dskTotal',
-                title: 'dskTotal',
+                field: 'dskDevice',
+                title: '设备路径',
                 align: 'center',
                 width: '10%',
                 sortable: true,
@@ -482,7 +340,31 @@ var TableInit_disk = function () {
             },
             {
                 field: 'dskUsed',
-                title: 'dskUsed',
+                title: '已用容量',
+                align: 'center',
+                width: '10%',
+                sortable: true,
+                valign: 'middle'
+            },
+            {
+                field: 'dskAvail',
+                title: '可用容量',
+                align: 'center',
+                width: '10%',
+                sortable: true,
+                valign: 'middle'
+            },
+            {
+                field: 'dskTotal',
+                title: '总容量',
+                align: 'center',
+                width: '10%',
+                sortable: true,
+                valign: 'middle'
+            },
+            {
+                field: 'dskIndex',
+                title: '磁盘编号',
                 align: 'center',
                 width: '10%',
                 sortable: true,
@@ -490,7 +372,7 @@ var TableInit_disk = function () {
             },
             {
                 field: 'time',
-                title: 'time',
+                title: '时间',
                 align: 'center',
                 width: '5%',
                 sortable: true,
@@ -541,13 +423,13 @@ var TableInit_if = function () {
                 field: 'ip',
                 title: 'IP',
                 align: 'center',
-                width: '30%',
+                width: '10%',
                 sortable: true,
                 valign: 'middle'
             },
             {
                 field: 'ifDescr',
-                title: 'ifDescr',
+                title: '网络接口描述',
                 align: 'center',
                 width: '10%',
                 sortable: true,
@@ -555,15 +437,7 @@ var TableInit_if = function () {
             },
             {
                 field: 'ifInOctets',
-                title: 'ifInOctets',
-                align: 'center',
-                width: '10%',
-                sortable: true,
-                valign: 'middle'
-            },
-            {
-                field: 'ifInUcastPkts',
-                title: 'ifInUcastPkts',
+                title: '接口输入的字节数',
                 align: 'center',
                 width: '10%',
                 sortable: true,
@@ -571,23 +445,31 @@ var TableInit_if = function () {
             },
             {
                 field: 'ifOutOctets',
-                title: 'ifOutOctets',
+                title: '接口输出的字节数',
                 align: 'center',
                 width: '10%',
+                sortable: true,
+                valign: 'middle'
+            },
+            {
+                field: 'ifInUcastPkts',
+                title: '接口接收的数据包个数',
+                align: 'center',
+                width: '20%',
                 sortable: true,
                 valign: 'middle'
             },
             {
                 field: 'ifOutUcastPkts',
-                title: 'ifOutUcastPkts',
+                title: '接口发送的数据包个数',
                 align: 'center',
-                width: '10%',
+                width: '20%',
                 sortable: true,
                 valign: 'middle'
             },
             {
                 field: 'time',
-                title: 'time',
+                title: '时间',
                 align: 'center',
                 width: '10%',
                 sortable: true,
@@ -631,16 +513,12 @@ function queryParams_mem() {
 
 //获取查询的参数 disk
 function queryParams_disk() {
-    var index = $("#select-diskpath")[0].selectedIndex;
-    var key = $("#select-diskpath")[0].options[index].text;
-
-    index = $("#select-diskip")[0].selectedIndex;
+    var index = $("#select-diskip")[0].selectedIndex;
     var ip = $("#select-diskip")[0].options[index].text;
 
     var temp = {
         table: 'disk',
         keyname: 'dskPath',
-        key: key,
         ip: ip
     };
     return temp;
@@ -648,19 +526,20 @@ function queryParams_disk() {
 
 //获取查询的参数 if
 function queryParams_if() {
-    var index = $("#select-ifdescr")[0].selectedIndex;
-    var key = $("#select-ifdescr")[0].options[index].text;
-
-    index = $("#select-ifip")[0].selectedIndex;
+    var index = $("#select-ifip")[0].selectedIndex;
     var ip = $("#select-ifip")[0].options[index].text;
 
     var temp = {
         table: 'network',
         keyname: 'ifDescr',
-        key: key,
         ip: ip
     };
     return temp;
+}
+
+function memUsedFormatter(value, row, index) {
+    var memUsedPer = parseFloat(((row.memTotalReal - row.memAvailReal - row.memBuffer - row.memCached) / row.memTotalReal) * 100).toFixed(1);
+    return [memUsedPer].join('');
 }
 
 function timeFormatter(value, row, index) {
