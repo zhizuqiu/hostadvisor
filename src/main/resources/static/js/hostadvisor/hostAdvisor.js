@@ -759,7 +759,7 @@ function showKeyList() {
 
                 for (x in mess[0]) {
                     if (x != "time" && x != "ip" && x != "dskDevice" && x != "dskPath" && x != "ifDescr") {
-                        $("#select-keys").append("<option>" + x + "</option>");
+                        $("#select-keys").append('<option value ="'+x+'">' + x + '</option>');
                     }
                 }
 
