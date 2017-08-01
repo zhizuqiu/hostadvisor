@@ -26,7 +26,7 @@ public class hostController {
 
     public hostController() {
 
-        String type = "test";                                       // test 为以下的默认值， pro 为读取系统的环境变量
+        String type = "pro";                                       // test 为以下的默认值， pro 为读取系统的环境变量
 
         String influxdb_url = "http://192.168.1.103:8086";    // influxDB的ip和端口
         String influxdb_username = "root";                        // influxDB的用户名
