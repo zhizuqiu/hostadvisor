@@ -46,6 +46,17 @@
     <!-- easy pie chart -->
     <script type="text/javascript" src="/js/easypiechart/jquery.easypiechart.min.js"></script>
 
+    <!-- i18next 国际化 -->
+    <script type="text/javascript" src="/js/i18next/i18next.min.js"></script>
+    <script type="text/javascript" src="/js/i18next/jquery-i18next.min.js"></script>
+
+    <script src="js/i18n-enhance/bootstrap-table-i18n-enhance.js"></script>
+
+    <script src="js/locale/bootstrap-table-en.js"></script>
+    <script src="js/locale/bootstrap-table-cn.js"></script>
+
+    <!-- jquery.cookie -->
+    <script type="text/javascript" src="js/cookie/jquery.cookie.js"></script>
 
     <script src="/js/hostadvisor/hostAdvisor.js"></script>
 
@@ -54,21 +65,24 @@
 <div class="row">
     <div class="col-md-12">
         <section class="panel">
-            <header class="panel-heading custom-tab ">
+
+            <header class="panel-heading custom-tab">
                 <ul class="nav nav-tabs">
                     <li class="active">
-                        <a href="#CPU" data-toggle="tab">CPU</a>
+                        <a href="#CPU" data-i18n="nav.cpu" data-toggle="tab"></a>
                     </li>
                     <li class="">
-                        <a href="#MEM" data-toggle="tab">内存</a>
+                        <a href="#MEM" data-i18n="nav.mem" data-toggle="tab"></a>
                     </li>
                     <li class="">
-                        <a href="#DISK" data-toggle="tab" onclick="">磁盘</a>
+                        <a href="#DISK" data-i18n="nav.disk" data-toggle="tab" onclick=""></a>
                     </li>
                     <li class="">
-                        <a href="#NETWORK" data-toggle="tab" onclick="">网络</a>
+                        <a href="#NETWORK" data-i18n="nav.network" data-toggle="tab" onclick=""></a>
                     </li>
                 </ul>
+                <select id="select-lang" style="position: absolute;right:50px;top:20px;"><option value="cn">中文</option><option value="en">English</option></select>
+
             </header>
             <div class="panel-body">
                 <div class="tab-content">
@@ -204,8 +218,10 @@
                                     <div class="form-group">
                                         <label class="col-md-12 control-label" style="text-align:left">From</label>
                                         <div class="input-group date form_datetime col-md-12">
-                                            <input id="input-time-from" class="form-control" size="16" type="text" value=""/>
-                                            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                            <input id="input-time-from" class="form-control" size="16" type="text"
+                                                   value=""/>
+                                            <span class="input-group-addon"><span
+                                                    class="glyphicon glyphicon-calendar"></span></span>
                                         </div>
                                     </div>
                                 </div>
@@ -213,8 +229,10 @@
                                     <div class="form-group">
                                         <label class="col-md-12 control-label" style="text-align:left">To</label>
                                         <div class="input-group date form_datetime col-md-12">
-                                            <input id="input-time-to" class="form-control" size="16" type="text" value=""/>
-                                            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                                            <input id="input-time-to" class="form-control" size="16" type="text"
+                                                   value=""/>
+                                            <span class="input-group-addon"><span
+                                                    class="glyphicon glyphicon-calendar"></span></span>
                                         </div>
                                     </div>
                                 </div>

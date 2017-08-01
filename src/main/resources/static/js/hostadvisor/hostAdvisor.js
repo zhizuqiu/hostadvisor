@@ -4,27 +4,82 @@ $(function () {
     var location = (window.location + '').split('/');
     basePath = location[0] + '//' + location[2] + '/' + location[3];
 });
+var COOKIE_LANG = "hostadvisor_lang";
 
-var OPTIONMAP = {
-    "ssCpuUser": "用户CPU百分比",
-    "ssCpuSystem": "系统CPU百分比",
-    "ssCpuIdle": "空闲CPU百分比",
-    "memUsedPer": "内存占用百分比",
-    "memAvailReal": "已使用内存",
-    "memBuffer": "Buffered",
-    "memCached": "Cached",
-    "memTotalReal": "总内存",
-    "dskPercent": "磁盘使用百分比",
-    "dskUsed": "已用容量",
-    "dskAvail": "可用容量",
-    "dskTotal": "总容量",
-    "dskIndex": "磁盘编号",
-    "ifInOctets":"接口输入的字节数",
-    "ifOutOctets":"接口输出的字节数",
-    "ifInUcastPkts":"接口接收的数据包个数",
-    "ifOutUcastPkts":"接口发送的数据包个数",
-    "time": "时间"
+var lang = $.cookie(COOKIE_LANG);
+if (lang == undefined) {
+    lang = 'cn';
+    $.cookie(COOKIE_LANG, lang);
+}
+
+//国际化配置
+var resources = {
+    en: {
+        translation: {
+            OPTIONMAP: {
+                ip: "ip",
+                ssCpuUser: "ssCpuUser",
+                ssCpuSystem: "ssCpuSystem",
+                ssCpuIdle: "ssCpuIdle",
+                memUsedPer: "memUsedPer",
+                memAvailReal: "memAvailReal",
+                memBuffer: "memBuffer",
+                memCached: "memCached",
+                memTotalReal: "memTotalReal",
+                dskPercent: "dskPercent",
+                dskUsed: "dskUsed",
+                dskAvail: "dskAvail",
+                dskTotal: "dskTotal",
+                dskIndex: "dskIndex",
+                ifInOctets: "ifInOctets",
+                ifOutOctets: "ifOutOctets",
+                ifInUcastPkts: "ifInUcastPkts",
+                ifOutUcastPkts: "ifOutUcastPkts",
+                time: "time",
+                OPERATION: "more"
+            },
+            nav: {
+                cpu: 'Cpu',
+                mem: 'Memory',
+                disk: 'Disk',
+                network: 'Network'
+            }
+        }
+    },
+    cn: {
+        translation: {
+            OPTIONMAP: {
+                ip: "ip",
+                ssCpuUser: "用户CPU百分比",
+                ssCpuSystem: "系统CPU百分比",
+                ssCpuIdle: "空闲CPU百分比",
+                emUsedPer: "内存占用百分比",
+                memAvailReal: "已使用内存",
+                memBuffer: "Buffered",
+                memCached: "Cached",
+                memTotalReal: "总内存",
+                dskPercent: "磁盘使用百分比",
+                dskUsed: "已用容量",
+                dskAvail: "可用容量",
+                dskTotal: "总容量",
+                dskIndex: "磁盘编号",
+                ifInOctets: "接口输入的字节数",
+                ifOutOctets: "接口输出的字节数",
+                ifInUcastPkts: "接口接收的数据包个数",
+                ifOutUcastPkts: "接口发送的数据包个数",
+                time: "时间",
+                OPERATION: "详情"
+            },
+            nav: {
+                cpu: 'Cpu',
+                mem: '内存',
+                disk: '磁盘',
+                network: '网络'
+            }
+        }
+    }
 };
+
 
 //定时器
 var TIMER;
@@ -32,6 +87,10 @@ var TIMER;
 var TIMEOUT = 5000;
 //控制定时器真正的运行与否，0为一直画表。1为只画一次
 var TIMER_TYPE = 0;
+
+//详情弹出框
+var modalTable = $("#modalTable");
+
 
 $(function () {
     TableInit_cpu(); //初始化cpu表格
@@ -47,8 +106,10 @@ $(function () {
         success: function (mess) {
             if (mess != undefined && mess.length > 0) {
 
-                for (x in mess) {
-                    $("#select-diskip").append("<option>" + mess[x].ip + "</option>");
+                for (var x in mess) {
+                    if (mess.hasOwnProperty(x)) {
+                        $("#select-diskip").append("<option>" + mess[x].ip + "</option>");
+                    }
                 }
 
                 TableInit_disk();
@@ -65,8 +126,10 @@ $(function () {
         success: function (mess) {
             if (mess != undefined && mess.length > 0) {
 
-                for (x in mess) {
-                    $("#select-ifip").append("<option>" + mess[x].ip + "</option>");
+                for (var x in mess) {
+                    if (mess.hasOwnProperty(x)) {
+                        $("#select-ifip").append("<option>" + mess[x].ip + "</option>");
+                    }
                 }
 
                 TableInit_if();
@@ -89,13 +152,13 @@ $(function () {
         showMore();
     });
 
-    $("#modalTable").on('hidden.bs.modal', function () {
+    modalTable.on('hidden.bs.modal', function () {
         if (TIMER != undefined) {
             window.clearInterval(TIMER);
         }
     });
 
-    $('#modalTable').on('show.bs.modal', function () {
+    modalTable.on('show.bs.modal', function () {
         TIMER_TYPE = 0;
     });
 
@@ -122,11 +185,54 @@ $(function () {
         showMore();
     });
 
+    //初始化国际化插件
+    $("#select-lang ").find("option[value=" + lang + "]").attr("selected", true);
+    initLang(lang);
+
+
+    $("#select-lang").change(function () {
+        var selectLang = $("#select-lang");
+        var index = selectLang[0].selectedIndex;
+        lang = selectLang[0].options[index].value;
+        $.cookie(COOKIE_LANG, lang);
+
+        initLang(lang);
+
+        var $table = $('#table');
+        $table.bootstrapTable("changeLocale", lang);
+        $table.bootstrapTable("changeTitle", resources[lang].translation.OPTIONMAP);
+
+        var $table_mem = $('#table_mem');
+        $table_mem.bootstrapTable("changeLocale", lang);
+        $table_mem.bootstrapTable("changeTitle", resources[lang].translation.OPTIONMAP);
+
+        var $table_disk = $('#table_disk');
+        $table_disk.bootstrapTable("changeLocale", lang);
+        $table_disk.bootstrapTable("changeTitle", resources[lang].translation.OPTIONMAP);
+
+        var $table_if = $('#table_if');
+        $table_if.bootstrapTable("changeLocale", lang);
+        $table_if.bootstrapTable("changeTitle", resources[lang].translation.OPTIONMAP);
+    });
+
 });
+
+function initLang(lang) {
+    i18next.init({
+        lng: lang,
+        resources: resources
+    }, function () {
+        jqueryI18next.init(i18next, $);
+
+        $('.nav').localize();
+        $('.content').localize();
+    });
+}
 
 var TableInit_cpu = function () {
 
     $('#table').bootstrapTable({
+        locale:lang,
         url: basePath + '/getListByTable',
         method: 'post', //请求方式（*）
         queryParams: queryParams_cpu(),
@@ -156,7 +262,7 @@ var TableInit_cpu = function () {
             },
             {
                 field: 'ssCpuUser',
-                title: '用户CPU百分比',
+                title: resources[lang].translation.OPTIONMAP['ssCpuUser'],
                 align: 'center',
                 width: '20%',
                 sortable: true,
@@ -164,7 +270,7 @@ var TableInit_cpu = function () {
             },
             {
                 field: 'ssCpuSystem',
-                title: '系统CPU百分比',
+                title: resources[lang].translation.OPTIONMAP['ssCpuSystem'],
                 align: 'center',
                 width: '20%',
                 sortable: true,
@@ -172,7 +278,7 @@ var TableInit_cpu = function () {
             },
             {
                 field: 'ssCpuIdle',
-                title: '空闲CPU百分比',
+                title: resources[lang].translation.OPTIONMAP['ssCpuIdle'],
                 align: 'center',
                 width: '20%',
                 sortable: true,
@@ -180,7 +286,7 @@ var TableInit_cpu = function () {
             },
             {
                 field: 'time',
-                title: '时间',
+                title: resources[lang].translation.OPTIONMAP['time'],
                 align: 'center',
                 width: '10%',
                 sortable: true,
@@ -189,7 +295,7 @@ var TableInit_cpu = function () {
             },
             {
                 field: 'OPERATION',
-                title: '详情',
+                title: resources[lang].translation.OPTIONMAP['OPERATION'],
                 align: 'center',
                 valign: 'middle',
                 width: '10%',
@@ -209,6 +315,7 @@ var TableInit_cpu = function () {
 var TableInit_mem = function () {
 
     $('#table_mem').bootstrapTable({
+        locale:lang,
         url: basePath + '/getListByTable',
         method: 'post', //请求方式（*）
         queryParams: queryParams_mem(),
@@ -230,7 +337,7 @@ var TableInit_mem = function () {
             },
             {
                 field: 'ip',
-                title: 'IP',
+                title: resources[lang].translation.OPTIONMAP['ip'],
                 align: 'center',
                 width: '10%',
                 sortable: true,
@@ -238,7 +345,7 @@ var TableInit_mem = function () {
             },
             {
                 field: 'memUsedPer',
-                title: '内存占用百分比',
+                title: resources[lang].translation.OPTIONMAP['memUsedPer'],
                 align: 'center',
                 width: '10%',
                 sortable: true,
@@ -247,7 +354,7 @@ var TableInit_mem = function () {
             },
             {
                 field: 'memAvailReal',
-                title: '已使用内存',
+                title: resources[lang].translation.OPTIONMAP['memAvailReal'],
                 align: 'center',
                 width: '20%',
                 sortable: true,
@@ -255,7 +362,7 @@ var TableInit_mem = function () {
             },
             {
                 field: 'memBuffer',
-                title: 'Buffered',
+                title: resources[lang].translation.OPTIONMAP['memBuffer'],
                 align: 'center',
                 width: '20%',
                 sortable: true,
@@ -263,7 +370,7 @@ var TableInit_mem = function () {
             },
             {
                 field: 'memCached',
-                title: 'Cached',
+                title: resources[lang].translation.OPTIONMAP['memCached'],
                 align: 'center',
                 width: '20%',
                 sortable: true,
@@ -271,7 +378,7 @@ var TableInit_mem = function () {
             },
             {
                 field: 'memTotalReal',
-                title: '总内存',
+                title: resources[lang].translation.OPTIONMAP['memTotalReal'],
                 align: 'center',
                 width: '10%',
                 sortable: true,
@@ -279,7 +386,7 @@ var TableInit_mem = function () {
             },
             {
                 field: 'time',
-                title: '时间',
+                title: resources[lang].translation.OPTIONMAP['time'],
                 align: 'center',
                 width: '10%',
                 sortable: true,
@@ -288,7 +395,7 @@ var TableInit_mem = function () {
             },
             {
                 field: 'OPERATION',
-                title: '详情',
+                title: resources[lang].translation.OPTIONMAP['OPERATION'],
                 align: 'center',
                 valign: 'middle',
                 width: '5%',
@@ -304,10 +411,10 @@ var TableInit_mem = function () {
     });
 };
 
-
 var TableInit_disk = function () {
 
     $('#table_disk').bootstrapTable({
+        locale:lang,
         url: basePath + '/getListByTableAndkeyAndIp',
         method: 'post', //请求方式（*）
         queryParams: queryParams_disk(),
@@ -329,7 +436,7 @@ var TableInit_disk = function () {
             },
             {
                 field: 'ip',
-                title: 'IP',
+                title: resources[lang].translation.OPTIONMAP['ip'],
                 align: 'center',
                 width: '10%',
                 sortable: true,
@@ -337,7 +444,7 @@ var TableInit_disk = function () {
             },
             {
                 field: 'dskPath',
-                title: '挂载路径',
+                title: resources[lang].translation.OPTIONMAP['dskPath'],
                 align: 'center',
                 width: '10%',
                 sortable: true,
@@ -345,7 +452,7 @@ var TableInit_disk = function () {
             },
             {
                 field: 'dskPercent',
-                title: '磁盘使用百分比',
+                title: resources[lang].translation.OPTIONMAP['dskPercent'],
                 align: 'center',
                 width: '10%',
                 sortable: true,
@@ -353,7 +460,7 @@ var TableInit_disk = function () {
             },
             {
                 field: 'dskDevice',
-                title: '设备路径',
+                title: resources[lang].translation.OPTIONMAP['dskDevice'],
                 align: 'center',
                 width: '10%',
                 sortable: true,
@@ -361,7 +468,7 @@ var TableInit_disk = function () {
             },
             {
                 field: 'dskUsed',
-                title: '已用容量',
+                title: resources[lang].translation.OPTIONMAP['dskUsed'],
                 align: 'center',
                 width: '10%',
                 sortable: true,
@@ -369,7 +476,7 @@ var TableInit_disk = function () {
             },
             {
                 field: 'dskAvail',
-                title: '可用容量',
+                title: resources[lang].translation.OPTIONMAP['dskAvail'],
                 align: 'center',
                 width: '10%',
                 sortable: true,
@@ -377,7 +484,7 @@ var TableInit_disk = function () {
             },
             {
                 field: 'dskTotal',
-                title: '总容量',
+                title: resources[lang].translation.OPTIONMAP['dskTotal'],
                 align: 'center',
                 width: '10%',
                 sortable: true,
@@ -385,7 +492,7 @@ var TableInit_disk = function () {
             },
             {
                 field: 'dskIndex',
-                title: '磁盘编号',
+                title: resources[lang].translation.OPTIONMAP['dskIndex'],
                 align: 'center',
                 width: '10%',
                 sortable: true,
@@ -393,7 +500,7 @@ var TableInit_disk = function () {
             },
             {
                 field: 'time',
-                title: '时间',
+                title: resources[lang].translation.OPTIONMAP['time'],
                 align: 'center',
                 width: '5%',
                 sortable: true,
@@ -402,7 +509,7 @@ var TableInit_disk = function () {
             },
             {
                 field: 'OPERATION',
-                title: '详情',
+                title: resources[lang].translation.OPTIONMAP['OPERATION'],
                 align: 'center',
                 valign: 'middle',
                 width: '5%',
@@ -421,6 +528,7 @@ var TableInit_disk = function () {
 var TableInit_if = function () {
 
     $('#table_if').bootstrapTable({
+        locale:lang,
         url: basePath + '/getListByTableAndkeyAndIp',
         method: 'post', //请求方式（*）
         queryParams: queryParams_if(),
@@ -442,7 +550,7 @@ var TableInit_if = function () {
             },
             {
                 field: 'ip',
-                title: 'IP',
+                title: resources[lang].translation.OPTIONMAP['ip'],
                 align: 'center',
                 width: '10%',
                 sortable: true,
@@ -450,7 +558,7 @@ var TableInit_if = function () {
             },
             {
                 field: 'ifDescr',
-                title: '网络接口描述',
+                title: resources[lang].translation.OPTIONMAP['ifDescr'],
                 align: 'center',
                 width: '10%',
                 sortable: true,
@@ -458,7 +566,7 @@ var TableInit_if = function () {
             },
             {
                 field: 'ifInOctets',
-                title: '接口输入的字节数',
+                title: resources[lang].translation.OPTIONMAP['ifInOctets'],
                 align: 'center',
                 width: '10%',
                 sortable: true,
@@ -466,7 +574,7 @@ var TableInit_if = function () {
             },
             {
                 field: 'ifOutOctets',
-                title: '接口输出的字节数',
+                title: resources[lang].translation.OPTIONMAP['ifOutOctets'],
                 align: 'center',
                 width: '10%',
                 sortable: true,
@@ -474,7 +582,7 @@ var TableInit_if = function () {
             },
             {
                 field: 'ifInUcastPkts',
-                title: '接口接收的数据包个数',
+                title: resources[lang].translation.OPTIONMAP['ifInUcastPkts'],
                 align: 'center',
                 width: '20%',
                 sortable: true,
@@ -482,7 +590,7 @@ var TableInit_if = function () {
             },
             {
                 field: 'ifOutUcastPkts',
-                title: '接口发送的数据包个数',
+                title: resources[lang].translation.OPTIONMAP['ifOutUcastPkts'],
                 align: 'center',
                 width: '20%',
                 sortable: true,
@@ -490,7 +598,7 @@ var TableInit_if = function () {
             },
             {
                 field: 'time',
-                title: '时间',
+                title: resources[lang].translation.OPTIONMAP['time'],
                 align: 'center',
                 width: '10%',
                 sortable: true,
@@ -499,7 +607,7 @@ var TableInit_if = function () {
             },
             {
                 field: 'OPERATION',
-                title: '详情',
+                title: resources[lang].translation.OPTIONMAP['OPERATION'],
                 align: 'center',
                 valign: 'middle',
                 width: '10%',
@@ -908,5 +1016,5 @@ var parserDate = function (date) {
     } else {
         return new Date();
     }
-};  
+};
 
