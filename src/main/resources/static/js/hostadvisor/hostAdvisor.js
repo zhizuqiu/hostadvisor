@@ -26,11 +26,14 @@ var resources = {
                 memBuffer: "memBuffer",
                 memCached: "memCached",
                 memTotalReal: "memTotalReal",
+                dskPath: "dskPath",
                 dskPercent: "dskPercent",
+                dskDevice: "dskDevice",
                 dskUsed: "dskUsed",
                 dskAvail: "dskAvail",
                 dskTotal: "dskTotal",
                 dskIndex: "dskIndex",
+                ifDescr: "ifDescr",
                 ifInOctets: "ifInOctets",
                 ifOutOctets: "ifOutOctets",
                 ifInUcastPkts: "ifInUcastPkts",
@@ -53,16 +56,19 @@ var resources = {
                 ssCpuUser: "用户CPU百分比",
                 ssCpuSystem: "系统CPU百分比",
                 ssCpuIdle: "空闲CPU百分比",
-                emUsedPer: "内存占用百分比",
+                memUsedPer:"内存占用百分比",
                 memAvailReal: "已使用内存",
                 memBuffer: "Buffered",
                 memCached: "Cached",
                 memTotalReal: "总内存",
+                dskPath: "磁盘路径",
                 dskPercent: "磁盘使用百分比",
+                dskDevice: "设备路径",
                 dskUsed: "已用容量",
                 dskAvail: "可用容量",
                 dskTotal: "总容量",
                 dskIndex: "磁盘编号",
+                ifDescr: "网络接口描述",
                 ifInOctets: "接口输入的字节数",
                 ifOutOctets: "接口输出的字节数",
                 ifInUcastPkts: "接口接收的数据包个数",
@@ -232,7 +238,7 @@ function initLang(lang) {
 var TableInit_cpu = function () {
 
     $('#table').bootstrapTable({
-        locale:lang,
+        locale: lang,
         url: basePath + '/getListByTable',
         method: 'post', //请求方式（*）
         queryParams: queryParams_cpu(),
@@ -315,7 +321,7 @@ var TableInit_cpu = function () {
 var TableInit_mem = function () {
 
     $('#table_mem').bootstrapTable({
-        locale:lang,
+        locale: lang,
         url: basePath + '/getListByTable',
         method: 'post', //请求方式（*）
         queryParams: queryParams_mem(),
@@ -414,7 +420,7 @@ var TableInit_mem = function () {
 var TableInit_disk = function () {
 
     $('#table_disk').bootstrapTable({
-        locale:lang,
+        locale: lang,
         url: basePath + '/getListByTableAndkeyAndIp',
         method: 'post', //请求方式（*）
         queryParams: queryParams_disk(),
@@ -528,7 +534,7 @@ var TableInit_disk = function () {
 var TableInit_if = function () {
 
     $('#table_if').bootstrapTable({
-        locale:lang,
+        locale: lang,
         url: basePath + '/getListByTableAndkeyAndIp',
         method: 'post', //请求方式（*）
         queryParams: queryParams_if(),
@@ -584,7 +590,7 @@ var TableInit_if = function () {
                 field: 'ifInUcastPkts',
                 title: resources[lang].translation.OPTIONMAP['ifInUcastPkts'],
                 align: 'center',
-                width: '20%',
+                width: '15%',
                 sortable: true,
                 valign: 'middle'
             },
@@ -592,7 +598,7 @@ var TableInit_if = function () {
                 field: 'ifOutUcastPkts',
                 title: resources[lang].translation.OPTIONMAP['ifOutUcastPkts'],
                 align: 'center',
-                width: '20%',
+                width: '15%',
                 sortable: true,
                 valign: 'middle'
             },
@@ -600,7 +606,7 @@ var TableInit_if = function () {
                 field: 'time',
                 title: resources[lang].translation.OPTIONMAP['time'],
                 align: 'center',
-                width: '10%',
+                width: '20%',
                 sortable: true,
                 valign: 'middle',
                 formatter: timeFormatter
@@ -626,44 +632,42 @@ var TableInit_if = function () {
 
 //获取查询的参数 cpu
 function queryParams_cpu() {
-    var temp = {
+    return {
         table: "cpu"
     };
-    return temp;
 }
 
 //获取查询的参数 mem
 function queryParams_mem() {
-    var temp = {
+    return {
         table: "mem"
     };
-    return temp;
 }
 
 //获取查询的参数 disk
 function queryParams_disk() {
-    var index = $("#select-diskip")[0].selectedIndex;
-    var ip = $("#select-diskip")[0].options[index].text;
+    var $select_diskip = $("#select-diskip");
+    var index = $select_diskip[0].selectedIndex;
+    var ip = $select_diskip[0].options[index].text;
 
-    var temp = {
+    return {
         table: 'disk',
         keyname: 'dskPath',
         ip: ip
     };
-    return temp;
 }
 
 //获取查询的参数 if
 function queryParams_if() {
-    var index = $("#select-ifip")[0].selectedIndex;
-    var ip = $("#select-ifip")[0].options[index].text;
+    var $select_ifip = $("#select-ifip");
+    var index = $select_ifip[0].selectedIndex;
+    var ip = $select_ifip[0].options[index].text;
 
-    var temp = {
+    return {
         table: 'network',
         keyname: 'ifDescr',
         ip: ip
     };
-    return temp;
 }
 
 function memUsedFormatter(value, row, index) {
@@ -722,7 +726,7 @@ function show(d) {
             clickable: false,
             tickColor: "#f9f9f9",
             borderWidth: 0,
-            borderColor: "#eeeeee",
+            borderColor: "#eeeeee"
         },
         colors: ["#357ebd", "#c9302c"],
         tooltip: true,
@@ -740,8 +744,9 @@ function showMore() {
     var ip = $("#lable-ip").html();
     var table = $("#lable-table").html();
 
-    var index = $("#select-keys")[0].selectedIndex;
-    var key = $("#select-keys")[0].options[index].value;
+    var $select_keys = $("#select-keys");
+    var index = $select_keys[0].selectedIndex;
+    var key = $select_keys[0].options[index].value;
 
     var name = null;
     if (table == 'disk' || table == 'network') {
@@ -835,13 +840,15 @@ function showMore() {
 
                 if (key != undefined) {
                     var d = [];
-                    for (x in mess) {
-                        var value = mess[x][key];
-                        var time = new Date(mess[x].time).getTime();
-                        var d_temp = [];
-                        d_temp.push(time);
-                        d_temp.push(value);
-                        d.push(d_temp);
+                    for (var x in mess) {
+                        if (mess.hasOwnProperty(x)) {
+                            var value = mess[x][key];
+                            var time = new Date(mess[x].time).getTime();
+                            var d_temp = [];
+                            d_temp.push(time);
+                            d_temp.push(value);
+                            d.push(d_temp);
+                        }
                     }
 
                     setTimeout(function () {
@@ -884,11 +891,14 @@ function showKeyList() {
         success: function (mess) {
             if (mess != undefined && mess.length > 0) {
 
-                $("#select-keys").html("");
+                var $select_keys = $("#select-keys");
+                $select_keys.html("");
 
-                for (x in mess[0]) {
-                    if (x != "time" && x != "ip" && x != "dskDevice" && x != "dskPath" && x != "ifDescr") {
-                        $("#select-keys").append('<option value ="' + x + '">' + OPTIONMAP[x] + '</option>');
+                for (var x in mess[0]) {
+                    if (mess[0].hasOwnProperty(x)) {
+                        if (x != "time" && x != "ip" && x != "dskDevice" && x != "dskPath" && x != "ifDescr") {
+                            $select_keys.append('<option value ="' + x + '">' + resources[lang].translation.OPTIONMAP[x] + '</option>');
+                        }
                     }
                 }
 
@@ -923,9 +933,6 @@ window.operateEvents = {
         $("#lable-name-div").hide();
 
         showKeyList();
-
-        //弹出删除确认框
-        //showAlert(3,"删除主机","删除主机IP为"+ip+"的主机，及其服务也将会删除，你确定删除吗？",null,ip);
     },
     //查看mem详情
     'click #showmem': function (e, value, row, index) {
