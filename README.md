@@ -18,6 +18,7 @@ String influxdb_username = "root";                        // influxDB的用户�
 String influxdb_password = "root";                        // influxDB的用户密码
 String influxdb_dbname = "advisor";                       // influxDB的数据库名字
 String influxdb_policy = "7_day";                         // influxDB保留策略的名字
+String influxdb_interval = "5000";                        // 采集程序的采集间隔
 </pre>
 
 使用以下命令执行程序：
@@ -45,6 +46,7 @@ docker run -ti \
  -e influxdb_username=root \
  -e influxdb_password=root \
  -e influxdb_dbname=advisor \
+ -e influxdbInterval=5000 \
  -e policy=7_day \
  -v /root/logs/:/logs/:rw \
  -p 8088:8088 \
