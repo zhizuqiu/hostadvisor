@@ -46,6 +46,12 @@ var resources = {
                 mem: 'Memory',
                 disk: 'Disk',
                 network: 'Network'
+            },
+            more: {
+                title: "More",
+                from: "From",
+                to: "To",
+                apply: "Apply"
             }
         }
     },
@@ -56,7 +62,7 @@ var resources = {
                 ssCpuUser: "用户CPU百分比",
                 ssCpuSystem: "系统CPU百分比",
                 ssCpuIdle: "空闲CPU百分比",
-                memUsedPer:"内存占用百分比",
+                memUsedPer: "内存占用百分比",
                 memAvailReal: "已使用内存",
                 memBuffer: "Buffered",
                 memCached: "Cached",
@@ -81,6 +87,12 @@ var resources = {
                 mem: '内存',
                 disk: '磁盘',
                 network: '网络'
+            },
+            more: {
+                title: "详情",
+                from: "从",
+                to: "到",
+                apply: "确认"
             }
         }
     }
@@ -182,7 +194,7 @@ $(function () {
 
     $('.form_datetime').datetimepicker({
         format: 'yyyy-mm-dd hh:ii:00',
-        language: 'zh-CN',
+        language: lang,
         pickerPosition: "top-right"
     });
 
@@ -219,6 +231,7 @@ $(function () {
         var $table_if = $('#table_if');
         $table_if.bootstrapTable("changeLocale", lang);
         $table_if.bootstrapTable("changeTitle", resources[lang].translation.OPTIONMAP);
+
     });
 
 });
@@ -231,7 +244,8 @@ function initLang(lang) {
         jqueryI18next.init(i18next, $);
 
         $('.nav').localize();
-        $('.content').localize();
+        $('.modal').localize();
+
     });
 }
 
@@ -742,7 +756,7 @@ function show(d) {
 function showMore() {
 
     var ip = $("#lable-ip").html();
-    var table = $("#lable-table").html();
+    var table = $("#input-table-hidden").val();
 
     var $select_keys = $("#select-keys");
     var index = $select_keys[0].selectedIndex;
@@ -880,7 +894,7 @@ function showMore() {
 function showKeyList() {
 
     var ip = $("#lable-ip").html();
-    var table = $("#lable-table").html();
+    var table = $("#input-table-hidden").val();
 
     var data = {ip: ip, table: table};
     $.ajax({
@@ -927,7 +941,9 @@ window.operateEvents = {
         $("#select-keys").html("");
 
         $("#lable-ip").html(ip);
-        $("#lable-table").html(table);
+        $("#lable-table").html(resources[lang].translation.nav[table]);
+        $("#input-table-hidden").val(table);
+
         $("#pie-chart-footer").html("cpu使用率");
 
         $("#lable-name-div").hide();
@@ -944,7 +960,8 @@ window.operateEvents = {
         $("#select-keys").html("");
 
         $("#lable-ip").html(ip);
-        $("#lable-table").html(table);
+        $("#lable-table").html(resources[lang].translation.nav[table]);
+        $("#input-table-hidden").val(table);
         $("#pie-chart-footer").html("mem使用率");
 
         $("#lable-name-div").hide();
@@ -962,7 +979,8 @@ window.operateEvents = {
         $("#select-keys").html("");
 
         $("#lable-ip").html(ip);
-        $("#lable-table").html(table);
+        $("#lable-table").html(resources[lang].translation.nav[table]);
+        $("#input-table-hidden").val(table);
         $("#pie-chart-footer").html("disk使用率");
 
         $("#lable-name-div").show();
@@ -981,7 +999,8 @@ window.operateEvents = {
         $("#select-keys").html("");
 
         $("#lable-ip").html(ip);
-        $("#lable-table").html(table);
+        $("#lable-table").html(resources[lang].translation.nav[table]);
+        $("#input-table-hidden").val(table);
         $("#pie-chart-footer").html("if使用率");
 
         $("#lable-name-div").show();

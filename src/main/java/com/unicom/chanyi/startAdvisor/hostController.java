@@ -112,7 +112,7 @@ public class hostController {
         String table = table_obj.toString();
         String ip = ip_obj.toString();
 
-        String distinctSql = "SELECT DISTINCT(" + keyname + ") FROM \"" + policy + "\"." + table + "  where time > now() - " + influxdbInterval + "ms;";
+        String distinctSql = "select " + keyname + " from \"" + policy + "\"." + table + " where ip = '" + ip + "'  and time > now() - " + influxdbInterval + "ms;";
 
         influxdbParam.put("sql", distinctSql);
 
@@ -125,12 +125,16 @@ public class hostController {
         }
 
         Integer count = 0;
+        Map<String, Boolean> distinctMapExist = new HashMap<>();
         List<String> distictList = new ArrayList<>();
         if (hostListDistinct != null && hostListDistinct.size() > 0) {
             for (Map<String, String> distinctMap : hostListDistinct) {
-                String distinct = distinctMap.get("distinct");
-                distictList.add(distinct);
-                count++;
+                String distinct = distinctMap.get(keyname);
+                if (distinctMapExist.get(distinct) == null) {
+                    distinctMapExist.put(distinct, true);
+                    distictList.add(distinct);
+                    count++;
+                }
             }
         }
         if (count == 0) {
